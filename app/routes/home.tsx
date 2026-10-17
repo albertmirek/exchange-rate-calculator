@@ -1,13 +1,13 @@
 import { useState } from "react";
 import type { Route } from "./+types/home";
-import { CurrencyConverter } from "~/components/CurrencyConverter";
+import { CurrencyConverterForm } from "~/components/CurrencyConverterForm";
 import { RatesTable } from "~/components/RatesTable";
 import { getRates } from "~/lib/cnb/cache/cache.server";
 
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Currency calculator" },
-    { name: "description", content: "CZK exchange rates from the Czech National Bank" },
+    { name: "description", content: "CZK exchange rates converter" },
   ];
 }
 
@@ -51,7 +51,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           <h2 id="converter-heading" className="text-lg font-semibold">
             Converter
           </h2>
-          <p className="mt-2 text-sm text-muted">The converter form goes here.</p>
+          <CurrencyConverterForm
+            headingId="converter-heading"
+            rates={rates}
+            selectedCode={selectedCode}
+            onSelectCode={setSelectedCode}
+          />
         </section>
 
         <section
