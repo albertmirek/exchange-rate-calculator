@@ -1,5 +1,5 @@
-import type { CnbRate } from "~/lib/cnb/parse.server";
 import { RatesTableRow } from "./RatesTableRow";
+import type {CnbRate} from "~/lib/cnb/parse/parse.server";
 
 const headerCell =
   "sticky top-0 bg-surface-raised px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-muted";

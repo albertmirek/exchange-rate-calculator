@@ -1,4 +1,4 @@
-import type { CnbRate } from "~/lib/cnb/parse.server";
+import type {CnbRate} from "~/lib/cnb/parse/parse.server";
 
 const rateFormat = new Intl.NumberFormat("en", {
   minimumFractionDigits: 3,
