@@ -1,4 +1,6 @@
+import { useState } from "react";
 import type { Route } from "./+types/home";
+import { CurrencyConverter } from "~/components/CurrencyConverter";
 import { RatesTable } from "~/components/RatesTable";
 import { getRates } from "~/lib/cnb/cache/cache.server";
 
@@ -27,6 +29,9 @@ const dailyRatesDateFormat = new Intl.DateTimeFormat("en-GB", {
 
 export default function Home({ loaderData }: Route.ComponentProps) {
   const { date, sequence, rates } = loaderData;
+  const [selectedCode, setSelectedCode] = useState(
+    () => (rates.find((rate) => rate.code === "EUR") ?? rates[0]).code,
+  );
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
       <header className="mb-8">
@@ -65,7 +70,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </p>
           </header>
           <div className="max-h-[32rem] overflow-y-auto">
-            <RatesTable rates={rates} />
+            <RatesTable
+              rates={rates}
+              selectedCode={selectedCode}
+              onSelectCode={setSelectedCode}
+            />
           </div>
         </section>
 

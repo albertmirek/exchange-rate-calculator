@@ -6,11 +6,27 @@ const rateFormat = new Intl.NumberFormat("en", {
 });
 const amountFormat = new Intl.NumberFormat("en");
 
-export function RatesTableRow({ rate }: { rate: CnbRate }) {
+type RatesTableRowProps = {
+  rate: CnbRate;
+  isSelected: boolean;
+  onSelect: () => void;
+};
+
+export function RatesTableRow({ rate, isSelected, onSelect }: RatesTableRowProps) {
   return (
-    <tr className="border-t border-line transition-colors hover:bg-surface-raised">
+    <tr
+      className={`border-t border-line transition-colors hover:bg-surface-raised ${isSelected ? "bg-surface-raised" : ""}`}
+    >
       <th scope="row" className="px-4 py-2.5 text-left font-semibold text-accent">
-        {rate.code}
+        <button
+          type="button"
+          onClick={onSelect}
+          aria-pressed={isSelected}
+          title={`Convert to ${rate.code}`}
+          className="cursor-pointer underline-offset-4 hover:underline focus-visible:underline"
+        >
+          {rate.code}
+        </button>
       </th>
       <td className="px-4 py-2.5 text-muted">
         {rate.country} {rate.currency}
