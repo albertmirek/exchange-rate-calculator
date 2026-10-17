@@ -4,7 +4,13 @@ import type {CnbRate} from "~/lib/cnb/parse/parse.server";
 const headerCell =
   "sticky top-0 bg-surface-raised px-4 py-2.5 text-xs font-semibold uppercase tracking-wider text-muted";
 
-export function RatesTable({ rates }: { rates: CnbRate[] }) {
+type RatesTableProps = {
+  rates: CnbRate[];
+  selectedCode: string;
+  onSelectCode: (code: string) => void;
+};
+
+export function RatesTable({ rates, selectedCode, onSelectCode }: RatesTableProps) {
   return (
     <table className="w-full border-collapse text-sm">
       <caption className="sr-only">
@@ -28,7 +34,12 @@ export function RatesTable({ rates }: { rates: CnbRate[] }) {
       </thead>
       <tbody>
         {rates.map((rate) => (
-          <RatesTableRow key={rate.code} rate={rate} />
+          <RatesTableRow
+            key={rate.code}
+            rate={rate}
+            isSelected={rate.code === selectedCode}
+            onSelect={() => onSelectCode(rate.code)}
+          />
         ))}
       </tbody>
     </table>

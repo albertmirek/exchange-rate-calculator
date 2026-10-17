@@ -1,11 +1,13 @@
+import { useState } from "react";
 import type { Route } from "./+types/home";
+import { CurrencyConverterForm } from "~/components/CurrencyConverterForm";
 import { RatesTable } from "~/components/RatesTable";
 import { getRates } from "~/lib/cnb/cache/cache.server";
 
 export function meta({}: Route.MetaArgs) {
   return [
     { title: "Currency calculator" },
-    { name: "description", content: "CZK exchange rates from the Czech National Bank" },
+    { name: "description", content: "CZK exchange rates converter" },
   ];
 }
 
@@ -27,6 +29,9 @@ const dailyRatesDateFormat = new Intl.DateTimeFormat("en-GB", {
 
 export default function Home({ loaderData }: Route.ComponentProps) {
   const { date, sequence, rates } = loaderData;
+  const [selectedCode, setSelectedCode] = useState(
+    () => (rates.find((rate) => rate.code === "EUR") ?? rates[0]).code,
+  );
   return (
     <main className="mx-auto max-w-6xl px-4 py-10 sm:px-6 sm:py-16">
       <header className="mb-8">
@@ -46,7 +51,12 @@ export default function Home({ loaderData }: Route.ComponentProps) {
           <h2 id="converter-heading" className="text-lg font-semibold">
             Converter
           </h2>
-          <p className="mt-2 text-sm text-muted">The converter form goes here.</p>
+          <CurrencyConverterForm
+            headingId="converter-heading"
+            rates={rates}
+            selectedCode={selectedCode}
+            onSelectCode={setSelectedCode}
+          />
         </section>
 
         <section
@@ -65,7 +75,11 @@ export default function Home({ loaderData }: Route.ComponentProps) {
             </p>
           </header>
           <div className="max-h-[32rem] overflow-y-auto">
-            <RatesTable rates={rates} />
+            <RatesTable
+              rates={rates}
+              selectedCode={selectedCode}
+              onSelectCode={setSelectedCode}
+            />
           </div>
         </section>
 
