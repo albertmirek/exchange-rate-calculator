@@ -1,6 +1,6 @@
 import { useState } from "react";
 import type { Route } from "./+types/home";
-import { CurrencyConverterForm } from "~/components/CurrencyConverterForm";
+import { CurrencyConverterForm } from "~/components/CurrencyConverterForm/CurrencyConverterForm";
 import { RatesTable } from "~/components/RatesTable";
 import { getRates } from "~/lib/cnb/cache/cache.server";
 
