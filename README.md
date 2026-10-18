@@ -35,6 +35,9 @@ Hungary|forint|100|HUF|6.697
 2. On the server the cache either answers from memory or fetches and parses the
    CNB file first.
 3. The page is server-rendered with the rates, then hydrated in the browser.
+4. In the browser the converter calculates the result as the visitor types. It
+   needs no further requests. The currency can be chosen in the form or by
+   clicking its code in the rates table.
 
 If the rates cannot be loaded at all (CNB is down and nothing is cached yet),
 the loader responds with a `503` and the standard error page.
@@ -123,13 +126,15 @@ when the window regains focus, so it can be added later without a new library.
 ```
 app/
 ├── components/            Presentational components
-│   ├── RatesTable.tsx       Table of the exchange rates
-│   └── RatesTableRow.tsx    One currency row
+│   ├── CurrencyConverterForm.tsx   Amount and currency inputs with the result
+│   ├── RatesTable.tsx              Table of the exchange rates
+│   └── RatesTableRow.tsx           One currency row
 ├── lib/cnb/               Everything about the CNB data (server only)
 │   ├── client.server.ts     Downloads the daily file
 │   ├── parse/               Turns the file's text into typed rates
 │   ├── schedule/            Publication time and retry timing
 │   └── cache/               In-memory cache that ties it all together
+├── lib/convert/           CZK to foreign currency conversion
 ├── routes/
 │   └── home.tsx             The page: loader and layout
 ├── root.tsx               Document shell and error page
@@ -157,7 +162,7 @@ The app is then available at <http://localhost:5173>.
 | `pnpm dev` | Starts the development server with hot reloading |
 | `pnpm build` | Creates the production build in `build/` |
 | `pnpm start` | Serves the production build |
-| `pnpm test` | Runs the unit tests once |
+| `pnpm test` | Runs all tests once |
 | `pnpm typecheck` | Generates route types and checks the TypeScript code |
 
 ## Testing
@@ -174,6 +179,12 @@ The tests cover the logic that is easy to get subtly wrong:
   retries, including weekends and both daylight saving changes.
 - **Cache:** the first request waiting for data, sharing one fetch, serving
   stale rates during a refresh, retry timing, failures, and which fixing wins.
+- **Conversion:** currencies quoted per 1, 100 and 1000 units, zero and small
+  amounts.
+- **Converter form:** typing an amount, a comma as the decimal separator,
+  dropping characters that are not part of a number, switching currency and
+  clearing the amount. These tests render the component in a simulated browser
+  (jsdom).
 
 The cache tests use a fake CNB and a fake clock, so they need no network.
 
@@ -186,3 +197,6 @@ It also runs as a plain Node server (`pnpm build`, then `pnpm start`).
 The rates cache lives in the memory of the process. On a long-running server
 that is one cache for all visitors. On Vercel the app runs as serverless
 functions, so each running instance has its own cache.
+
+The functions run in Frankfurt (`fra1`, set in `vercel.json`), close to the
+visitors in Europe.
